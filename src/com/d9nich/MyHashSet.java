@@ -148,7 +148,7 @@ public class MyHashSet<E> implements Collection<E> {
          */
         public MyHashSetIterator(MyHashSet<E> set) {
             this.set = set;
-            list = setToList();
+            list = set.setToList();
         }
 
         /**
