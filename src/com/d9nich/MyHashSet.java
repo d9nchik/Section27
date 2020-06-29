@@ -1,6 +1,7 @@
 package com.d9nich;
 
 import java.util.Collection;
+import java.util.IllegalFormatException;
 import java.util.LinkedList;
 
 public class MyHashSet<E> implements Collection<E> {
@@ -166,9 +167,10 @@ public class MyHashSet<E> implements Collection<E> {
          * Remove the current element returned by the last next()
          */
         public void remove() {
-            // Left as an exercise
-            // You need to remove the element from the set
-            // You also need to remove it from the list
+            if (current == 0)
+                throw new IllegalStateException("Called delete on null element");
+            set.remove(list.get(--current));
+            list.remove(current);
         }
     }
 
