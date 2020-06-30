@@ -3,6 +3,7 @@ package com.d9nich;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import java.util.Set;
 
 public class Main {
 
@@ -28,5 +29,10 @@ public class Main {
         for (int i = 0; i < 1_000; i++)
             collection.contains(random.nextDouble() * 2_000_000);
         System.out.println("Time to check if contains: " + (System.currentTimeMillis() - startTime) + "ms");
+    }
+
+
+    public static <E> ArrayList<E> setToList(Set<E> s) {
+        return new ArrayList<>(s);
     }
 }
