@@ -245,10 +245,8 @@ public class MyHashSet<E> implements Collection<E> {
         java.util.ArrayList<E> list = setToList();
         StringBuilder builder = new StringBuilder("[");
         // Add the elements except the last one to the string builder
-        for (int i = 0; i < list.size() - 1;
-             i++) {
+        for (int i = 0; i < list.size() - 1;i++)
             builder.append(list.get(i)).append(", ");
-        }
         // Add the last element in the list to the string builder
         if (list.size() == 0)
             builder.append("]");
