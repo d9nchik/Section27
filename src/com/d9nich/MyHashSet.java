@@ -1,7 +1,6 @@
 package com.d9nich;
 
 import java.util.Collection;
-import java.util.IllegalFormatException;
 import java.util.LinkedList;
 
 public class MyHashSet<E> implements Collection<E> {
@@ -131,47 +130,14 @@ public class MyHashSet<E> implements Collection<E> {
     }
 
     /**
-     * Inner class for iterator
+     * Copy elements in the hash set to an array list
      */
-    private class MyHashSetIterator implements java.util.Iterator<E> {
-        // Store the elements in a list
-        private final java.util.ArrayList<E> list;
-        private int current = 0; // Point to the current element in list
-        private MyHashSet<E> set;
-
-        /**
-         * Create a list from the set
-         */
-        public MyHashSetIterator(MyHashSet<E> set) {
-            this.set = set;
-            list = set.setToList();
-        }
-
-        /**
-         * Next element for traversing?
-         */
-        @Override
-        public boolean hasNext() {
-            return current < list.size();
-        }
-
-        /**
-         * Get current element and move cursor to the next
-         */
-        @Override
-        public E next() {
-            return list.get(current++);
-        }
-
-        /**
-         * Remove the current element returned by the last next()
-         */
-        public void remove() {
-            if (current == 0)
-                throw new IllegalStateException("Called delete on null element");
-            set.remove(list.get(--current));
-            list.remove(current);
-        }
+    private java.util.ArrayList<E> setToList() {
+        java.util.ArrayList<E> list = new java.util.ArrayList<>();
+        for (int i = 0; i < capacity; i++)
+            if (table[i] != null)
+                list.addAll(table[i]);
+        return list;
     }
 
     /**
@@ -225,19 +191,6 @@ public class MyHashSet<E> implements Collection<E> {
     }
 
     /**
-     * Copy elements in the hash set to an array list
-     */
-    private java.util.ArrayList<E> setToList() {
-        java.util.ArrayList<E> list = new java.util.ArrayList<>();
-        for (int i = 0; i < capacity; i++) {
-            if (table[i] != null) {
-                list.addAll(table[i]);
-            }
-        }
-        return list;
-    }
-
-    /**
      * Return a string representation for this set
      */
     @Override
@@ -245,7 +198,7 @@ public class MyHashSet<E> implements Collection<E> {
         java.util.ArrayList<E> list = setToList();
         StringBuilder builder = new StringBuilder("[");
         // Add the elements except the last one to the string builder
-        for (int i = 0; i < list.size() - 1;i++)
+        for (int i = 0; i < list.size() - 1; i++)
             builder.append(list.get(i)).append(", ");
         // Add the last element in the list to the string builder
         if (list.size() == 0)
@@ -257,37 +210,83 @@ public class MyHashSet<E> implements Collection<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> arg0) {
-// Left as an exercise
+        arg0.forEach(this::add);
         return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> arg0) {
-// Left as an exercise
-        return false;
+        for (Object element : arg0)
+            if (!contains(element))
+                return false;
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> arg0) {
-// Left as an exercise
-        return false;
+        arg0.forEach(this::remove);
+        return true;
     }
 
     @Override
     public boolean retainAll(Collection<?> arg0) {
-// Left as an exercise
-        return false;
+        for (E element : this)
+            if (!arg0.contains(element))
+                remove(element);
+        return true;
     }
 
     @Override
     public Object[] toArray() {
-        // Left as an exercise
-        return null;
+        return setToList().toArray();
     }
 
     @Override
     public <T> T[] toArray(T[] arg0) {
-        // Left as an exercise
-        return null;
+        return setToList().toArray(arg0);
+    }
+
+    /**
+     * Inner class for iterator
+     */
+    private class MyHashSetIterator implements java.util.Iterator<E> {
+        // Store the elements in a list
+        private final java.util.LinkedList<E> list;
+        private final MyHashSet<E> set;
+        private int current = 0; // Point to the current element in list
+
+        /**
+         * Create a list from the set
+         */
+        public MyHashSetIterator(MyHashSet<E> set) {
+            this.set = set;
+            list = new LinkedList<>(set.setToList());
+        }
+
+        /**
+         * Next element for traversing?
+         */
+        @Override
+        public boolean hasNext() {
+            return current < list.size();
+        }
+
+        /**
+         * Get current element and move cursor to the next
+         */
+        @Override
+        public E next() {
+            return list.get(current++);
+        }
+
+        /**
+         * Remove the current element returned by the last next()
+         */
+        public void remove() {
+            if (current == 0)
+                throw new IllegalStateException("Called delete on null element");
+            set.remove(list.get(--current));
+            list.remove(current);
+        }
     }
 }
